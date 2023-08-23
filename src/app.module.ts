@@ -5,6 +5,7 @@ import { CustomersModule } from './customers/customers.module';
 import { CustomersService } from './customers/services/customers/customers.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 import entities from './typeorm';
 
 @Module({
@@ -17,7 +18,7 @@ import entities from './typeorm';
     database:"tutorial_db",
     entities:entities,
     synchronize:true,
-  })],
+  }), AuthModule],
   controllers: [],
   providers: [CustomersService],
 })

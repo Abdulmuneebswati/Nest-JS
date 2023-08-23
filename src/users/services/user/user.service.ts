@@ -4,6 +4,7 @@ import { plainToClass } from 'class-transformer';
 import { User as UserEntity } from 'src/typeorm';
 import { createUserDto } from 'src/users/dto/createUser.dto';
 import { User,serializedUser } from 'src/users/types/User';
+import { encryptPassword } from 'src/utils/bcrypt';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -48,10 +49,17 @@ export class UserService {
     getUserById(id:number){
         return this.users.find((user)=> user.id === id);
     }
-    createUser(createUserDto:createUserDto){
-       const newUser =  this.userRepository.create(createUserDto);
+    async createUser(createUserDto:createUserDto){
+       const password = await encryptPassword(createUserDto.password);
+       const newUser =  this.userRepository.create({...createUserDto,password});
        return this.userRepository.save(newUser)
-        
-       
+    }
+    // (method) UserService.findUserByUsername(username:string):Promise<UserEntity>
+    async findUserByUsername(username:string){
+        return this.userRepository.findOne({
+            where: {
+              username: username // or simply { username }
+            }
+          })
     }
 }
